@@ -66,12 +66,10 @@ try:
             "earliest": df["crash_date"].min(),
             "latest": df["crash_date"].max(),
         },
-        "total_injured": pd.to_numeric(df.get("number_of_persons_injured", pd.Series(dtype=float)), errors="coerce").sum(),
-        "total_killed": pd.to_numeric(df.get("number_of_persons_killed", pd.Series(dtype=float)), errors="coerce").sum(),
+        "total_injured": int(pd.to_numeric(df.get("number_of_persons_injured", pd.Series(dtype=float)), errors="coerce").sum()),
+        "total_killed": int(pd.to_numeric(df.get("number_of_persons_killed", pd.Series(dtype=float)), errors="coerce").sum()),
         "boroughs": df["borough"].value_counts().to_dict(),
     }
-
-    send_crash_summary_email(summary)
 
     with open(f"summary_{today}.json", "w") as f:
         json.dump(summary, f, indent=2)
