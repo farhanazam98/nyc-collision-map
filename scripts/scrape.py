@@ -66,8 +66,8 @@ try:
             "earliest": df["crash_date"].min(),
             "latest": df["crash_date"].max(),
         },
-        "total_injured": df["number_of_persons_injured"].sum(),
-        "total_killed": df["number_of_persons_killed"].sum(),
+        "total_injured": pd.to_numeric(df.get("number_of_persons_injured", 0), errors="coerce").sum(),
+        "total_killed": pd.to_numeric(df.get("number_of_persons_killed", 0), errors="coerce").sum(),
         "boroughs": df["borough"].value_counts().to_dict(),
     }
 
