@@ -75,6 +75,16 @@ input[type="number"] {
     padding-top: 20px;
     border-top: 1px solid #eee;
 }
+
+.data-note {
+    font-size: 12px;
+    line-height: 1.4;
+    color: #8a6d00;
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    border-radius: 6px;
+    padding: 10px 12px;
+}
 </style>
 </head>
 <body>
@@ -98,6 +108,12 @@ input[type="number"] {
             <input type="checkbox" id="clusterToggle" checked>
             Enable marker clustering
         </label>
+    </div>
+
+    <div class="panel-section data-note">
+        <strong>Note:</strong> The NYC Open Data motor vehicle collisions
+        dataset has not published new crash data since June 11, 2026, so the
+        map does not show collisions after that date.
     </div>
 
     <div id="status">Loading…</div>
