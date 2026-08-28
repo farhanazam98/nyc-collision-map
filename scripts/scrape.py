@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 
 import pandas as pd
 from district_helper import assign_districts, load_data
-from send_mail import send_crash_summary_email
 from sodapy import Socrata
 
 try:
@@ -12,8 +11,21 @@ try:
 
     today = datetime.now().strftime("%Y-%m-%d")
 
-    seven_days_ago = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
-    query = f"SELECT * WHERE crash_date >= '{seven_days_ago}' ORDER BY crash_date DESC LIMIT 1000"
+    # The NYC crash dataset lags real time (often by weeks or months), so a
+    # window anchored to "today" can come back empty. Anchor the 7-day window to
+    # the most recent crash_date actually present in the dataset instead.
+    max_date_result = client.get(
+        "h9gi-nx95", select="max(crash_date) as max_crash_date", limit=1
+    )
+    if not max_date_result or not max_date_result[0].get("max_crash_date"):
+        print("Error: Could not determine latest crash_date in dataset!")
+        sys.exit(1)
+
+    latest_crash_date = datetime.strptime(
+        max_date_result[0]["max_crash_date"][:10], "%Y-%m-%d"
+    )
+    window_start = (latest_crash_date - timedelta(days=7)).strftime("%Y-%m-%d")
+    query = f"SELECT * WHERE crash_date >= '{window_start}' ORDER BY crash_date DESC LIMIT 1000"
 
     results = client.get("h9gi-nx95", query=query)
 
